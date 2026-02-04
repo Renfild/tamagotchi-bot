@@ -1,0 +1,121 @@
+.shop {
+  padding: 16px;
+}
+
+.shop h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* Shop Currency */
+.shop-currency {
+  display: flex;
+  gap: 20px;
+  padding: 12px 16px;
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.shop-currency span:first-child {
+  color: #FFA502;
+}
+
+.shop-currency span:last-child {
+  color: #70A1FF;
+}
+
+/* Category Filter */
+.category-filter {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.category-filter button {
+  padding: 10px 16px;
+  background: var(--tg-theme-secondary-bg-color);
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.category-filter button.active {
+  background: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+}
+
+/* Shop Items */
+.shop-items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.shop-item {
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.shop-item .item-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.shop-item h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.shop-item p {
+  font-size: 12px;
+  color: var(--tg-theme-hint-color);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.item-price {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.item-price span:first-child {
+  color: #FFA502;
+}
+
+.item-price span:last-child {
+  color: #70A1FF;
+}
+
+.buy-btn {
+  width: 100%;
+  padding: 10px;
+  background: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.buy-btn:active {
+  opacity: 0.8;
+}

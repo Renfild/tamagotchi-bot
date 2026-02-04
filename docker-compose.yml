@@ -1,0 +1,197 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: tamagotchi_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tamagotchi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secretpassword}
+      POSTGRES_DB: ${POSTGRES_DB:-tamagotchi_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tamagotchi}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tamagotchi_network
+
+  # Redis Cache & Queue
+  redis:
+    image: redis:7-alpine
+    container_name: tamagotchi_redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redispass}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tamagotchi_network
+
+  # MinIO S3 Storage
+  minio:
+    image: minio/minio:latest
+    container_name: tamagotchi_minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      MINIO_DEFAULT_BUCKETS: tamagotchi-pets,tamagotchi-assets
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - tamagotchi_network
+
+  # Backend API (FastAPI)
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.api
+    container_name: tamagotchi_api
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-tamagotchi}:${POSTGRES_PASSWORD:-secretpassword}@postgres:5432/${POSTGRES_DB:-tamagotchi_db}
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-redispass}@redis:6379/0
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD:-minioadmin}
+      - BOT_TOKEN=${BOT_TOKEN}
+      - WEBAPP_URL=${WEBAPP_URL}
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key}
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - tamagotchi_network
+    restart: unless-stopped
+
+  # Telegram Bot (aiogram)
+  bot:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.bot
+    container_name: tamagotchi_bot
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-tamagotchi}:${POSTGRES_PASSWORD:-secretpassword}@postgres:5432/${POSTGRES_DB:-tamagotchi_db}
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-redispass}@redis:6379/0
+      - BOT_TOKEN=${BOT_TOKEN}
+      - WEBAPP_URL=${WEBAPP_URL}
+      - API_URL=http://api:8000
+      - ADMIN_IDS=${ADMIN_IDS}
+    depends_on:
+      - api
+      - postgres
+      - redis
+    networks:
+      - tamagotchi_network
+    restart: unless-stopped
+
+  # Celery Worker
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.celery
+    container_name: tamagotchi_celery
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-tamagotchi}:${POSTGRES_PASSWORD:-secretpassword}@postgres:5432/${POSTGRES_DB:-tamagotchi_db}
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-redispass}@redis:6379/0
+      - BOT_TOKEN=${BOT_TOKEN}
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD:-redispass}@redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD:-redispass}@redis:6379/2
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - tamagotchi_network
+    restart: unless-stopped
+
+  # Celery Beat (Scheduler)
+  celery_beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.celery
+    container_name: tamagotchi_celery_beat
+    command: celery -A tasks.scheduler beat --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-tamagotchi}:${POSTGRES_PASSWORD:-secretpassword}@postgres:5432/${POSTGRES_DB:-tamagotchi_db}
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-redispass}@redis:6379/0
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD:-redispass}@redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD:-redispass}@redis:6379/2
+    depends_on:
+      - redis
+      - postgres
+      - celery_worker
+    networks:
+      - tamagotchi_network
+    restart: unless-stopped
+
+  # Frontend (Mini App)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tamagotchi_frontend
+    environment:
+      - REACT_APP_API_URL=${API_URL:-http://localhost:8000}
+      - REACT_APP_BOT_USERNAME=${BOT_USERNAME}
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - tamagotchi_network
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: tamagotchi_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infra/nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - api
+      - frontend
+    networks:
+      - tamagotchi_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+
+networks:
+  tamagotchi_network:
+    driver: bridge

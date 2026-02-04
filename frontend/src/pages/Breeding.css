@@ -1,0 +1,77 @@
+.breeding {
+  padding: 16px;
+}
+
+.breeding h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.breeding-info {
+  margin-bottom: 24px;
+}
+
+.info-card {
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.info-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.info-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.info-card li {
+  padding: 8px 0;
+  padding-left: 24px;
+  position: relative;
+  color: var(--tg-theme-hint-color);
+}
+
+.info-card li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #27ae60;
+  font-weight: 700;
+}
+
+.cost-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: 12px;
+}
+
+.cost {
+  font-weight: 700;
+  color: #FFA502;
+}
+
+.find-partner-btn {
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.find-partner-btn:active {
+  transform: scale(0.98);
+}

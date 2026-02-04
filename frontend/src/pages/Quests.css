@@ -1,0 +1,115 @@
+.quests {
+  padding: 16px;
+}
+
+.quests h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.quests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quest-card {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: 12px;
+}
+
+.quest-card.completed {
+  border: 2px solid #27ae60;
+}
+
+.quest-info {
+  flex: 1;
+}
+
+.quest-info h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.quest-info p {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  margin-bottom: 12px;
+}
+
+/* Progress */
+.quest-progress {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.quest-progress span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Rewards */
+.quest-rewards {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.quest-rewards span:first-child {
+  color: #FFA502;
+}
+
+.quest-rewards span:last-child {
+  color: #70A1FF;
+}
+
+/* Claim Button */
+.claim-btn {
+  padding: 10px 16px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.claim-btn:active {
+  opacity: 0.8;
+}
+
+.claimed-badge {
+  width: 32px;
+  height: 32px;
+  background: #27ae60;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}

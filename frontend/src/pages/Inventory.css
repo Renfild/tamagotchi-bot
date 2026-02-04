@@ -1,0 +1,96 @@
+.inventory {
+  padding: 16px;
+}
+
+.inventory h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* Category Filter */
+.category-filter {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.category-filter button {
+  padding: 10px 16px;
+  background: var(--tg-theme-secondary-bg-color);
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.category-filter button.active {
+  background: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+}
+
+/* Items Grid */
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.item-card {
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.item-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.item-info h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.item-info p {
+  font-size: 12px;
+  color: var(--tg-theme-hint-color);
+  line-height: 1.4;
+}
+
+.item-quantity {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.equipped-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 16px;
+}
+
+.empty {
+  grid-column: span 2;
+  text-align: center;
+  padding: 40px;
+  color: var(--tg-theme-hint-color);
+}
