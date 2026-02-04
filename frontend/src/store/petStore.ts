@@ -187,7 +187,7 @@ export const usePetStore = create<PetState>((set, get) => ({
   sleepPet: async (petId) => {
     try {
       const response = await petApi.sleepPet(petId);
-      const { sleep_until } = response.data;
+      void response.data;
       
       set(state => {
         const updatePet = (pet: Pet) => {
