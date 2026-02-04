@@ -1,15 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { api } from '../api/client';
-
-interface User {
-  id: number;
-  username?: string;
-  first_name: string;
-  coins: number;
-  crystals: number;
-  is_premium: boolean;
-}
+import { User } from '../user';
 
 interface AuthState {
   token: string | null;
