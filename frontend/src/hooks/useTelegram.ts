@@ -50,7 +50,7 @@ declare global {
 export const useTelegram = () => {
   const [isReady, setIsReady] = useState(false);
   const [initData, setInitData] = useState<string>('');
-  const [user, setUser] = useState<Window['Telegram']['WebApp']['initDataUnsafe']['user'] | null>(null);
+  const [user, setUser] = useState<{id?: number; first_name?: string; last_name?: string; username?: string} | null>(null);
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
