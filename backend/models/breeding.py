@@ -1,7 +1,7 @@
 """
 Breeding model for pet breeding/ mating.
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional, Dict, Any
 from enum import Enum as PyEnum
 
@@ -152,10 +152,8 @@ class BreedingRequest(Base):
         
         # Set cooldowns on parent pets
         if self.pet1:
-            from datetime import timedelta
             self.pet1.breeding_cooldown_until = datetime.utcnow() + timedelta(days=7)
         if self.pet2:
-            from datetime import timedelta
             self.pet2.breeding_cooldown_until = datetime.utcnow() + timedelta(days=7)
     
     def complete(self, result_pet_id: int, inherited_traits: Dict[str, Any]) -> None:

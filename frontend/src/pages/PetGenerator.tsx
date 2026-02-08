@@ -25,7 +25,7 @@ const PERSONALITIES = [
 const PetGenerator: React.FC = () => {
   const navigate = useNavigate();
   const { createPet } = usePetStore();
-  const { showMainButton, hideMainButton, hapticImpact } = useTelegram();
+  const { hapticImpact } = useTelegram();
   
   const [step, setStep] = useState(1);
   const [petData, setPetData] = useState({

@@ -11,6 +11,8 @@ from sqlalchemy import (
     Boolean,
     ForeignKey,
     UniqueConstraint,
+    String,      # ← ДОБАВЛЕНО
+    JSON,        # ← ДОБАВЛЕНО
 )
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.sql import func

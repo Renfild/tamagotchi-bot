@@ -1,7 +1,7 @@
 """
 Battle model for PvP battles.
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional, List, Dict, Any
 from enum import Enum as PyEnum
 
@@ -160,9 +160,7 @@ class Battle(Base):
         """Start the battle."""
         self.status = BattleStatus.ACTIVE
         self.started_at = datetime.utcnow()
-        self.turn_deadline = datetime.utcnow() + __import__("datetime").timedelta(
-            seconds=self.time_limit_seconds
-        )
+        self.turn_deadline = datetime.utcnow() + timedelta(seconds=self.time_limit_seconds)
         
         # Initialize HP
         if self.pet1:
@@ -185,9 +183,7 @@ class Battle(Base):
         """Switch to next player's turn."""
         self.current_turn = 2 if self.current_turn == 1 else 1
         self.turn_number += 1
-        self.turn_deadline = datetime.utcnow() + __import__("datetime").timedelta(
-            seconds=self.time_limit_seconds
-        )
+        self.turn_deadline = datetime.utcnow() + timedelta(seconds=self.time_limit_seconds)
     
     def add_log_entry(self, entry: Dict[str, Any]) -> None:
         """Add entry to battle log."""

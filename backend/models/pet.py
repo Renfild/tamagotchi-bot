@@ -1,7 +1,7 @@
 """
 Pet model for virtual pets.
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional, List, Dict, Any
 from enum import Enum as PyEnum
 
@@ -292,7 +292,7 @@ class Pet(Base):
     def sleep(self, hours: int = 4) -> None:
         """Put pet to sleep."""
         self.status = PetStatus.SLEEPING
-        self.sleep_until = datetime.utcnow() + __import__("datetime").timedelta(hours=hours)
+        self.sleep_until = datetime.utcnow() + timedelta(hours=hours)
     
     def wake_up(self) -> None:
         """Wake up the pet."""

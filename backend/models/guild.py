@@ -90,7 +90,9 @@ class Guild(Base):
         return self.member_count >= self.max_members
     
     @property
-    can_join: bool = property(lambda self: self.is_recruiting and not self.is_full)
+    def can_join(self) -> bool:
+        """Check if users can join this guild."""
+        return self.is_recruiting and not self.is_full
     
     def get_leader(self) -> Optional["GuildMember"]:
         """Get guild leader."""
